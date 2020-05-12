@@ -1,0 +1,414 @@
+.spanText {
+  position: relative;
+  font-size: 17px;
+  height: 20px;
+  display: flex;
+  float: left;
+}
+
+#shareText {
+  position: absolute;
+  left: -1000px;
+  top: -1000px;
+  opacity: 0;
+}
+
+.spanText span {
+  height: 18px;
+}
+
+.bm2 span {
+  color: #029299;
+}
+
+.bm3 {
+  color: blue;
+}
+
+.bm3:after {
+  background: blue;
+}
+
+.bm4 {
+  color: rgb(6, 255, 60);
+}
+
+
+
+.spanText font {
+  position: absolute;
+  display: none;
+  color: #FFF;
+  transform: translate(-50%, 0%);
+  font-size: 18px;
+  width: 11px;
+
+  height: 20px;
+  left: 50%;
+  background: #ff4a4a66;
+  bottom: -13px;
+  line-height: 21px;
+}
+
+.el-tag {
+  height: 20px;
+  line-height: 19px !important;
+}
+
+.sszk .el-button--primary {
+  height: 20px;
+  line-height: 0px !important;
+  display: flex;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+}
+
+.gdk {
+  width: 100%;
+  margin-bottom: 5px;
+  /* height: calc(100vh - 73px); */
+  height: calc(100vh - 97px);
+  overflow: auto;
+  border: 0px solid #e3e3e3;
+  box-sizing: border-box;
+  transition: all 0.5s;
+  padding: 5px;
+}
+
+.srk {
+  width: 100%;
+  height: 50px;
+  border: 1px solid #029299;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.srk textarea {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  background: transparent;
+  font-size: 12px;
+  border: 0px;
+  resize: none;
+  border: 0px;
+  outline: none;
+
+}
+
+.zq {
+  background: #dde0e7;
+  color: #333 !important;
+}
+
+.cw {
+  /* background: #dde0e7;
+    color: red !important; */
+  background: #e70b03;
+  color: rgb(247, 247, 247) !important;
+}
+
+
+
+.sszk {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.spanText {
+  position: relative;
+  font-size: 18px;
+  height: 25px;
+  width: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-end;
+  float: left;
+  justify-content: center;
+  ;
+}
+
+#shareText {
+  position: absolute;
+  left: -1000px;
+  top: -1000px;
+  opacity: 0;
+}
+
+.spanText span {
+  height: 38px;
+}
+
+.spanText:after {
+  content: '';
+  width: calc(100% - 0px);
+  height: 1px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.bm2:after {
+  height: 0px;
+  border: 0.4px dashed #029299;
+}
+
+.bm2 {
+  color: #029299;
+}
+
+.bm3 {
+  color: blue;
+}
+
+.bm3:after {
+  background: blue;
+  opacity: 1 !important;
+  bottom: 0px;
+  left: 0px;
+}
+
+.bm4 {
+  color: rgb(6, 255, 60);
+}
+
+.bm4:after {
+  height: 0px;
+  opacity: 0;
+  border: 1px dashed rgb(6, 255, 60);
+}
+
+.spanText font {
+  position: absolute;
+  display: flex;
+  color: #c31515;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 9px !important;
+  width: 11px !important;
+  font-weight: bold;
+  height: 12px !important;
+  left: 50%;
+  background: transparent;
+  bottom: -12px !important;
+}
+
+
+.srk {
+  width: 100%;
+  height: 100px;
+  border: 1px solid #029299;
+  border-radius: 20px;
+}
+
+.srk textarea {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 15px;
+  border: 0px;
+  resize: none;
+  border: 0px;
+  outline: none;
+}
+
+.zq {
+  background: #9b9da1;
+  color: #333 !important;
+}
+
+.cw {
+  /* background: #dde0e7;
+    color: red !important; */
+  background: #f89693;
+  color: rgb(247, 247, 247) !important;
+}
+
+* {
+  letter-spacing: 0px;
+  padding: 0px;
+  margin: 0px;
+
+}
+
+body {
+  transition: opacity 1s;
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.sszk {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+#anew {
+  max-height: 26px;
+  max-width: 26px;
+}
+
+#anew.el-button--primary {
+  height: 20px;
+  line-height: 0px !important;
+  display: flex;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+}
+
+#anew [class*=" el-icon-"],
+[class^=el-icon-] {
+  line-height: 0px !important;
+}
+
+.el-drawer {
+  width: 70% !important;
+  outline: none;
+}
+
+.gdq-drawer .el-drawer__body {
+  text-align: center;
+}
+
+.gdq-drawer .el-drawer__open .el-drawer.rtl {
+  overflow: auto;
+  box-sizing: border-box;
+  padding-bottom: 20px;
+}
+
+.jz {
+  display: flex;
+  justify-content: center;
+}
+
+.head-box .login-text {
+  display: block;
+  border: 0x !important;
+}
+
+.word-box {
+  align-items: center;
+  margin-top: 7px;
+  padding: 0px 8px;
+}
+
+.u-dialog .el-upload {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  /* background: url(https://c-ssl.duitang.com/uploads/item/201803/13/20180313191049_FsTG5.gif) no-repeat;
+    background-size: 100% 100%; */
+  /* background: linear-gradient(rgba(255, 255, 255, 0.6) 0%, rgba(222, 222, 255, 0.6) 100%) */
+  /* background: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(222, 222, 255, 1) 100%) */
+}
+
+.c-box {
+  width: 100%;
+  margin: 0px auto;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.u-dialog .el-upload-list__item .el-icon-close {
+  top: 13px;
+}
+
+.u-dialog .el-dialog--center .el-dialog__body {
+  padding: 5px 10px;
+  text-align: center;
+}
+
+.u-dialog .e-ipt {
+  padding: 0px 20px;
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+
+.u-dialog .e-ipt input {
+  height: 27px;
+}
+
+.el-message-box {
+  width: 90%;
+}
+
+.mention * {
+  color: #333 !important;
+}
+
+.mention font {
+  opacity: 0;
+}
+
+.mention *:after {
+  border: 0px !important;
+  background: transparent;
+}
+
+.mention .cw {
+  /* color: red !important; */
+  color: rgb(247, 247, 247) !important;
+}
+
+.readTextWay {
+  align-items: center;
+  justify-content: inherit;
+  margin-top: 9px;
+  color: #333;
+  padding: 0px 8px;
+}
+
+.readTextWay .title {
+  font-size: 14px;
+  margin-right: 11px;
+  margin-top: -2px;
+}
+
+.gdq-btn {
+  margin: 3px auto;
+  height: 10px;
+  line-height: 0px;
+  width: calc(100% - 40px)
+}
+
+.stm {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+  background: url(https://c-ssl.duitang.com/uploads/item/201803/13/20180313191049_FsTG5.gif) no-repeat;
+  background-size: 100% 100%;
+  transform: scaleX(1);
+  opacity: 0.8;
+}
+
+.cw * {
+  color: rgb(247, 247, 247) !important;
+}
+
+.el-color-picker__trigger {
+  width: 29px;
+  height: 29px;
+}
+
+.el-color-picker__panel {
+  transform: scale(0.68) translate(-50%, -50%);
+  top: 50% !important;
+  left: 50% !important;
+}
