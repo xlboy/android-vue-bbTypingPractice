@@ -64,7 +64,6 @@
         }).then((response) => {
           loading.close()
           this.$root.wordJson.optionAry = [this.$root.wordJson.defaultAry, {label: '私人词库', options: response}]
-          // this.$root.wordJson.optionAry = [...this.$root.wordJson.defaultAry, {label: '私人词库', options: response}]
         })
       },
       readUserInfo() { // 读取用户信息
