@@ -6,19 +6,19 @@
 
 ### 功能篇
 
-<span id="top">实时</span>
+## 实时
 - √ 速度测试
 - √ 击键测试
 - √ 码长测试
-<span id="top">自动</span>
+## 自动
 - √ 自动发送练习成绩至QQ群
 - √ 自动读取QQ群中练习文章
 - √ 自动分享所练习文章内容
-<span id="top">词提</span>
+## 词提
 - √ 内置多种词库
 - √ 同步上传词库至用户词库
 - √ 同步自定义词提颜色
-<span id="top">统计</span>
+## 统计
 - √ 同步练习字数
 - √ 同步练习成绩
 - √ 可视化成绩成长图
@@ -37,6 +37,9 @@ npm install
 npm run serve
 ```
 
+### <span id="env">✅ 配置多环境变量 </span>
+
+`package.json` 里的 `scripts` 配置 `serve` `stage` `build`，通过 `--mode xxx` 来执行不同环境
 
 - 通过 `npm run serve` 启动本地 , 执行 `development`
 - 通过 `npm run stage` 打包测试 , 执行 `staging`
