@@ -1,4 +1,3 @@
-
 * {
   letter-spacing: 0px;
   padding: 0px;
@@ -18,6 +17,11 @@ body {
     background-size: 100% 100%; */
   /* background: linear-gradient(rgba(255, 255, 255, 0.6) 0%, rgba(222, 222, 255, 0.6) 100%) */
   /* background: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(222, 222, 255, 1) 100%) */
+}
+
+.el-dropdown-menu {
+  height: 50vh;
+  overflow: auto;
 }
 
 #shareText {
@@ -50,6 +54,11 @@ body {
   z-index: 1
 }
 
+.el-select-dropdown__wrap {
+  height: 80vh;
+  bottom: 0px;
+}
+
 .c-box {
   width: 100%;
   margin: 0px auto;
@@ -57,6 +66,10 @@ body {
   overflow: hidden;
   box-sizing: border-box;
   position: absolute;
+
+  .el-select-dropdown__wrap {
+    max-height: 80vh;
+  }
 
   .bb-content {
     display: flex;
@@ -365,5 +378,3 @@ body {
 .el-message-box {
   width: 80% !important;
 }
-
-

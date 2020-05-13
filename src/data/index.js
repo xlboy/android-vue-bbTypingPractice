@@ -18,18 +18,22 @@ const sszk = {
   sd: 0,
   mc: 0,
   jj: 0,
-  isChn:true,
+  isChn: true,
   previousBm: '',
   wordStr: '',
   backSpace: 0
 }
 module.exports = {
   default: {
-    user: {...user},
-    sszk: {...sszk}
+    user: {
+      ...user
+    },
+    sszk: {
+      ...sszk
+    }
   },
   textJson: { // 渲染跟打窗内容所需数据
-    dealWithText: '',  // 需处理的字
+    dealWithText: '', // 需处理的字
     tR: '', // 已输入的文字
     tRLength: 0, // 已输入的文字的长度
     hintAry: { // 跟打dom渲染时所需的数组
@@ -40,7 +44,12 @@ module.exports = {
     }
   },
   userInfo: { // 登录块
-      ...user
+    ...user
+  },
+  gitTyping: {
+    currentSeverNum: 1, // 当前段落
+    currentText: '',
+    currentMaxSize: 100,
   },
   gdqJson: { // 跟打器速度、文段等等所需数据
     llmc: 1, // 理论码长
@@ -65,11 +74,12 @@ module.exports = {
     isBindQQ: false, // 是否绑定了QQ
     isWordAnalysis: false, // 是否出现词提框
     isDrawer: false, //是否出现左侧抽屉
-    isRegLoginDialog: false,  //是否出现登录框,
+    isRegLoginDialog: false, //是否出现登录框,
     isReadTextWay: '2' // 是否自动读文
   },
   wordJson: { // 关于词提这块的数据
     optionAry: [],
+    userAry: [],
     defaultAry: [],
     id: 0,
     analysisJson: {

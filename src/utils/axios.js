@@ -12,4 +12,3 @@ const axiosFun = {
   }
 }
 Vue.prototype.$axios = axiosFun
-
