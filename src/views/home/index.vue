@@ -8,9 +8,9 @@
     <Dialog/>
     <!-- 解决显示隐藏窗口带来的问题 -->
     <div class="cover" v-show="isCover"></div>
-    <!--    <div class="srk" style="position: absolute;bottom: 10px;left:0px">-->
-    <!--      <textarea autosize v-model="$root.textJson.tR" id="textarea"></textarea>-->
-    <!--    </div>-->
+    <!-- <div class="srk" style="position: absolute;bottom: 10px;left:0px">
+      <textarea autosize v-model="$root.textJson.tR" id="textarea"></textarea>
+    </div> -->
   </div>
 </template>
 

@@ -11,7 +11,10 @@ body {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
-
+.flex{
+  display: flex;
+  justify-content: center;
+}
 #app {
   /* background: url(https://c-ssl.duitang.com/uploads/item/201803/13/20180313191049_FsTG5.gif) no-repeat;
     background-size: 100% 100%; */
@@ -59,6 +62,11 @@ body {
   bottom: 0px;
 }
 
+.el-popover {
+  height: 80vh;
+  overflow: auto;
+}
+
 .c-box {
   width: 100%;
   margin: 0px auto;
@@ -66,6 +74,10 @@ body {
   overflow: hidden;
   box-sizing: border-box;
   position: absolute;
+
+  .bb-dialog {
+    .grade-box {}
+  }
 
   .el-select-dropdown__wrap {
     max-height: 80vh;

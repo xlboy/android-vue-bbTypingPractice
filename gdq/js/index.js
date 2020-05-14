@@ -329,9 +329,9 @@ new Vue({
 			}
 		},
 		countSd() { // 计算速度
-			this.sszk.sd = (this.textarea.length / this.sszk.start * 60).toFixed(2) // 实时速度
-			this.sszk.mc = (this.sszk.zjs.length / this.textarea.length).toFixed(2) // 实时码长
-			this.sszk.jj = (this.sszk.zjs.length / this.sszk.start).toFixed(2) // 实时击键
+			this.sszk.speed = (this.textarea.length / this.sszk.start * 60).toFixed(2) // 实时速度
+			this.sszk.runningYard = (this.sszk.zjs.length / this.textarea.length).toFixed(2) // 实时码长
+			this.sszk.keystroke = (this.sszk.zjs.length / this.sszk.start).toFixed(2) // 实时击键
 		},
 		hintWordMention() { // 词提遍历显示
 			if(!this.isShow.isWordHint) return  // 如果没开启词提模式直接返回不让他执行下去
@@ -483,7 +483,7 @@ new Vue({
 			if(errorNum===0) return '错字0'
 			const countError=()=>{ // 计算出错字后的速度
 				const withL=this.withStr.length
-				const succeddSpeed= this.sszk.sd // 正确的速度
+				const succeddSpeed= this.sszk.speed // 正确的速度
 				const errorSpeed=((withL - (errorNum * 5)) / this.sszk.start * 60).toFixed(2)
 				return `${errorSpeed}/${succeddSpeed}`
 			}
@@ -601,7 +601,7 @@ new Vue({
 			}
 			this.textarea = this.textarea.substr(0, this.withStr.length)
 			if (this.textarea.length < this.textareaLength) { // 回改了哦
-				this.sszk.hg++
+				this.sszk.backChange++
 				const kt = this.textarea.length
 				for(i in '1'.repeat(10)){ // 这里也要修改下哈，泥马了个憋
 					let dom =document.getElementById(`gd_${kt+parseInt(i)}`)
@@ -660,18 +660,18 @@ new Vue({
 				this.sszk.start = (this.endTime - this.startTime - this.pauseTime) / 1000
 				this.countSd()
 				this.startTime = null
-				if (this.sszk.sd === 'Infinity' || this.sszk.sd === NaN || this.sszk.sd > 1000) {
+				if (this.sszk.speed === 'Infinity' || this.sszk.speed === NaN || this.sszk.speed > 1000) {
 					androids.changeFlagBoce()
-					androids.sendMsgQQ(`我跟你们说哦，我家主人刚刚打出了神一般的速度，哇塞，每毫秒${this.sszk.sd}字呀！`)
+					androids.sendMsgQQ(`我跟你们说哦，我家主人刚刚打出了神一般的速度，哇塞，每毫秒${this.sszk.speed}字呀！`)
 					return this.toast('答应我，做个亻行吗，这特么光速都没这么快！')
 				}
 				const wordRate = (this.sszk.wordStr.length / this.withStr.length * 100).toFixed(2)
 				const countTextSpeed=this.countErrorText()
 				let str=``
 				if(countTextSpeed!=='错字0'){
-					str =`第${this.textNoom}段 速度${countTextSpeed[1]} 击键${this.sszk.jj} 码长${this.sszk.mc} 回改${this.sszk.hg} 退格${this.sszk.backSpace} 理论码长${this.llmc} 打词${wordRate}% ${countTextSpeed[0]}[错1罚5] 字数${this.withStr.length} 耗时${this.sszk.start}s 个签:${this.userInfo.sign}   -BB打字机`
+					str =`第${this.textNoom}段 速度${countTextSpeed[1]} 击键${this.sszk.keystroke} 码长${this.sszk.runningYard} 回改${this.sszk.backChange} 退格${this.sszk.backSpace} 理论码长${this.llmc} 打词${wordRate}% ${countTextSpeed[0]}[错1罚5] 字数${this.withStr.length} 耗时${this.sszk.start}s 个签:${this.userInfo.sign}   -BB打字机`
 				}else{
-					str =`第${this.textNoom}段 速度${this.sszk.sd} 击键${this.sszk.jj} 码长${this.sszk.mc} 回改${this.sszk.hg} 退格${this.sszk.backSpace} 理论码长${this.llmc} 打词${wordRate}% 错字0 字数${this.withStr.length} 耗时${this.sszk.start}s 个签:${this.userInfo.sign}   -BB打字机`
+					str =`第${this.textNoom}段 速度${this.sszk.speed} 击键${this.sszk.keystroke} 码长${this.sszk.runningYard} 回改${this.sszk.backChange} 退格${this.sszk.backSpace} 理论码长${this.llmc} 打词${wordRate}% 错字0 字数${this.withStr.length} 耗时${this.sszk.start}s 个签:${this.userInfo.sign}   -BB打字机`
 				}
 				androids.setPasteText(str)
 				this.toast(str)

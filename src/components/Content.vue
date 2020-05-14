@@ -2,9 +2,9 @@
   <div class="bb-content">
     <div class="sszk" style="width:100%">
       <el-tag>第{{$root.gdqJson.severnNum}}段</el-tag>
-      <el-tag>{{$root.sszk.sd}}</el-tag>
-      <el-tag>{{$root.sszk.jj}}</el-tag>
-      <el-tag>{{$root.sszk.mc}}</el-tag>
+      <el-tag>{{$root.sszk.speed}}</el-tag>
+      <el-tag>{{$root.sszk.keystroke}}</el-tag>
+      <el-tag>{{$root.sszk.runningYard}}</el-tag>
       <el-switch v-model="$root.isState.isWordHint" active-color="#13ce66" inactive-color="#dd1b54"></el-switch>
     </div>
     <div class="sszk" style="width:100%">
@@ -14,6 +14,22 @@
         style="margin:3px;"
         v-if="$root.userInfo.userId !== ''"
       >今:{{$root.currentPage.currentDaySize}}/总:{{$root.userInfo.countSize}}</el-tag>
+      <el-button
+        v-if="$root.isState.isDiyExercise"
+        type="primary"
+        id="anew"
+        icon="el-icon-arrow-down"
+        circle
+        @click="$root.eventHub.$emit('sendDiyText')"
+      ></el-button>
+      <el-button
+        type="primary"
+        id="anew"
+        icon="el-icon-s-data"
+        circle
+        v-if="$root.userInfo.userId !== ''"
+        @click="$root.isState.isGradeList = true"
+      ></el-button>
     </div>
     <div class="sszk" style="width:100%">
       <el-button
@@ -77,6 +93,18 @@ export default {
     PostText
   },
   watch: {
+    ['$root.sszk.speed'](){
+      this.$root.sszk.speed = isNaN(this.$root.sszk.speed) || this.$root.sszk.speed === 'Infinity' ? 0 : this.$root.sszk.speed
+      this.$root.sszk.keystroke = isNaN(this.$root.sszk.keystroke) || this.$root.sszk.keystroke === 'Infinity' ? 0 : this.$root.sszk.keystroke
+      if(this.$root.sszk.speed > 1000) this.$root.sszk.speed = 1000
+      if(this.$root.sszk.keystroke > 20) this.$root.sszk.keystroke = 20
+    },
+    ['$root.sszk.keystroke'](){
+      this.$root.sszk.speed = isNaN(this.$root.sszk.speed) || this.$root.sszk.speed === 'Infinity' ? 0 : this.$root.sszk.speed
+      this.$root.sszk.keystroke = isNaN(this.$root.sszk.keystroke) || this.$root.sszk.keystroke === 'Infinity' ? 0 : this.$root.sszk.keystroke
+      if(this.$root.sszk.speed > 1000) this.$root.sszk.speed = 1000
+      if(this.$root.sszk.keystroke > 20) this.$root.sszk.keystroke = 20
+    },
     async ['$root.isState.isWordHint']() {
       await this.start()
       this.verifCurrentIsYes()
@@ -88,7 +116,7 @@ export default {
       this.verifCurrentIsYes()
     },
     ['$root.textJson.dealWithText']() {
-      // 计算击键、打词率、退格
+      // 做中间处理的，并且计算击键、打词率、退格
       this.$root.sszk.zjs += '-'
       const currentTextL = this.$root.textJson.tR.length - 1
       const ciLenth = this.$root.textJson.dealWithText.substr(currentTextL + 1) // 当前打出的字符
@@ -111,10 +139,17 @@ export default {
     },
     async ['$root.textJson.tR']() {
       this.$root.textJson.tR = this.$root.textJson.tR.substr(0, this.$root.gdqJson.withStr.length)
-      this.changeScrollBar()
+      this.changeScrollBar() // 控制下拉滚动条的
+      {
+        let sszkJson = {...this.$root.sszk}
+        delete sszkJson.realTimeSpeed
+        delete sszkJson.zjs
+        sszkJson.date = new Date().getTime()
+        this.$root.sszk.realTimeSpeed.push(sszkJson) // 把跟打的细节记录下来呗，亲
+      }
       if (this.$root.textJson.tR.length < this.$root.textJson.tRLength) {
         // 回改了哦
-        this.$root.sszk.hg++
+        this.$root.sszk.backChange++
         const kt = this.$root.textJson.tR.length
         for (let i in '1'.repeat(10)) {
           // 这里也要修改下哈，泥马了个憋
@@ -176,50 +211,10 @@ export default {
         this.$root.textJson.tR[this.$root.gdqJson.withStr.length - 1] ===
           this.$root.gdqJson.withStr[this.$root.gdqJson.withStr.length - 1]
       ) {
-        // 跟打完成
-        this.$root.currentPage.currentPageNum = 0
-        this.$root.textJson.tR = this.$root.textJson.tR.substr(0, this.$root.gdqJson.withStr.length)
-        this.$root.gdqJson.endTime = new Date().getTime()
-        this.$root.sszk.start =
-          (this.$root.gdqJson.endTime - this.$root.gdqJson.startTime - this.$root.gdqJson.pauseTime) / 1000
-        this.countSd()
-        this.addCountSize()
-        this.$root.gdqJson.startTime = null
-        if (this.$root.sszk.sd === 'Infinity' || this.$root.sszk.sd === NaN || this.$root.sszk.sd > 1000) {
-          androids.changeFlagBoce()
-          androids.sendMsgQQ(`我跟你们说哦，我家主人刚刚打出了神一般的速度，哇塞，每毫秒${this.$root.sszk.sd}字呀！`)
-          return this.toast('答应我，做个亻行吗，这特么光速都没这么快！')
-        }
-        const wordRate = ((this.$root.sszk.wordStr.length / this.$root.gdqJson.withStr.length) * 100).toFixed(2)
-        const countTextSpeed = this.countErrorText()
-        const keyAccurate = 100 - this.$root.gdqJson.withStr.length / this.$root.sszk.backSpace
-        let str = ``
-        if (countTextSpeed !== '错字0') {
-          str = `第${this.$root.gdqJson.severnNum}段 速度${countTextSpeed[1]} 击键${this.$root.sszk.jj} 码长${
-            this.$root.sszk.mc
-          } 回改${this.$root.sszk.hg} 退格${this.$root.sszk.backSpace} 键准${
-            keyAccurate === -Infinity ? 100.0 : keyAccurate.toFixed(2)
-          }% ${this.$root.isState.isWordHint ? '理论码长' + this.$root.gdqJson.llmc : ''} 打词${wordRate}% ${
-            countTextSpeed[0]
-          }[错1罚5] 字数${this.$root.gdqJson.withStr.length} 耗时${this.$root.sszk.start}s 个签:${
-            this.$root.userInfo.sign
-          }   -BB打字机`
-        } else {
-          str = `第${this.$root.gdqJson.severnNum}段 速度${this.$root.sszk.sd} 击键${this.$root.sszk.jj} 码长${
-            this.$root.sszk.mc
-          } 回改${this.$root.sszk.hg} 退格${this.$root.sszk.backSpace} 键准${
-            keyAccurate === -Infinity ? 100.0 : keyAccurate.toFixed(2)
-          }% ${this.$root.isState.isWordHint ? '理论码长' + this.$root.gdqJson.llmc : ''} 打词${wordRate}% 错字0 字数${
-            this.$root.gdqJson.withStr.length
-          } 耗时${this.$root.sszk.start}s 个签:${this.$root.userInfo.sign}   -BB打字机`
-        }
-        androids.setPasteText(str)
-        this.toast(str)
-        androids.changeFlagBoce()
-        androids.sendMsgQQ(str)
+        this.typingComplete()
       }
 
-      this.hintWordMention()
+      this.hintWordMention() // 更新一遍词提渲染
 
       this.$root.textJson.tRLength = this.$root.textJson.tR.length // 用来记录是否回改了
     }
@@ -244,23 +239,28 @@ export default {
       this.$root.eventHub.$on('share', this.share)
       this.$root.eventHub.$on('sendHit', this.sendHit)
       this.$root.eventHub.$on('sendArticle', this.sendArticle)
+      this.$root.eventHub.$on('isDiyExercise', this.isDiyExercise)
     },
-    async sendHit(title, serverNum, wordText, isShare) {
+    async sendHit(title, serverNum, wordText, isShare, remainder) {
+      // 设置文段的方法
       this.anew()
       this.$root.gdqJson.severnNum = serverNum
       this.$root.gdqJson.withStr = wordText
       await this.start()
-      if (isShare === true) this.share(title)
+      if (isShare === true) this.share(title, remainder)
     },
     changeScrollBar() {
       // 控制滚动条的高度
       var gdk = document.getElementById('gdk')
       if (this.$root.textJson.tR.length < 50) return
-      gdk.scrollTop =
-        ((gdk.scrollHeight - gdk.clientHeight) / this.$root.gdqJson.withStr.length) * this.$root.textJson.tR.length
+      let num = 0
+      if (this.$root.textJson.tR.length < this.$root.gdqJson.withStr.length / 2) num = gdk.clientHeight * 2
+      else num = gdk.clientHeight * 0.5
+      gdk.scrollTop = ((gdk.scrollHeight - num) / this.$root.gdqJson.withStr.length) * this.$root.textJson.tR.length
     },
     addCountSize() {
       // 统计字数
+      if (this.isNull(this.$root.userInfo.userId)) return
       this.$axios
         .post(`/savaCountSize`, {
           userId: this.$root.userInfo.userId,
@@ -268,15 +268,85 @@ export default {
         })
         .then(response => {})
     },
-    share(title) {
+    addGrade(gradeJson) { // 上传此局成绩
+      if (this.isNull(this.$root.userInfo.userId)) return
+      this.$axios
+        .post(`/addUserGrade`, {
+          userId: this.$root.userInfo.userId,
+          dataStr: JSON.stringify(gradeJson),
+          date: new Date().getTime()
+        })
+        .then(response => {})
+    },
+    typingComplete() {
+      // 跟打完成的事件
+      this.$root.currentPage.currentPageNum = 0
+      this.$root.textJson.tR = this.$root.textJson.tR.substr(0, this.$root.gdqJson.withStr.length)
+      this.$root.gdqJson.endTime = new Date().getTime()
+      this.$root.sszk.start =
+        (this.$root.gdqJson.endTime - this.$root.gdqJson.startTime - this.$root.gdqJson.pauseTime) / 1000
+      this.countSd() // 计算速度
+      this.addCountSize() // 触发上传当前字数的事件
+      this.$root.gdqJson.startTime = null // 重头再来
+      if (this.$root.sszk.speed === 'Infinity' || this.$root.sszk.speed === NaN || this.$root.sszk.speed > 1000) {
+        androids.changeFlagBoce()
+        androids.sendMsgQQ(`我跟你们说哦，我家主人刚刚打出了神一般的速度，哇塞，每毫秒${this.$root.sszk.speed}字呀！`)
+        return this.toast('答应我，做个亻行吗，这特么光速都没这么快！')
+      }
+      const wordRate = ((this.$root.sszk.wordStr.length / this.$root.gdqJson.withStr.length) * 100).toFixed(2)
+      const countTextSpeed = this.countErrorText()
+      const keyAccurate =
+        100 - this.$root.gdqJson.withStr.length / (this.$root.sszk.backSpace + this.$root.sszk.backChange)
+      let str = ``
+      let gradeJson = {
+        severnNum: this.$root.gdqJson.severnNum,
+        speed: countTextSpeed !== '错字0' ? countTextSpeed[1] : this.$root.sszk.speed,
+        keystroke: this.$root.sszk.keystroke,
+        runningYard: this.$root.sszk.runningYard,
+        backChange: this.$root.sszk.backChange,
+        backSpace: this.$root.sszk.backSpace,
+        keyAccurate: keyAccurate === -Infinity ? 100.0 : keyAccurate.toFixed(2),
+        wordRate,
+        errorSize: {num: countTextSpeed[2], ary: countTextSpeed[3]},
+        withStr: this.$root.gdqJson.withStr,
+        elapsedTime: this.$root.sszk.start
+      }
+      gradeJson['realTimeSpeed'] = [...this.$root.sszk.realTimeSpeed]
+      this.addGrade(gradeJson) // 触发上传当前成绩的事件
+      if (countTextSpeed !== '错字0') {
+        str = `第${gradeJson.gradeJson}段 速度${countTextSpeed[1]} 击键${gradeJson.keystroke} 码长${
+          gradeJson.runningYard
+        } 回改${gradeJson.backChange} 退格${this.$root.sszk.backSpace} 键准${gradeJson.keyAccurate}% ${
+          this.$root.isState.isWordHint ? '理论码长' + this.$root.gdqJson.llmc : ''
+        } 打词${wordRate}% ${countTextSpeed[0]}[错1罚5] 字数${this.$root.gdqJson.withStr.length} 耗时${
+          this.$root.sszk.start
+        }s 个签:${this.$root.userInfo.sign}   -BB打字机`
+      } else {
+        str = `第${gradeJson.severnNum}段 速度${gradeJson.speed} 击键${gradeJson.keystroke} 码长${
+          gradeJson.runningYard
+        } 回改${gradeJson.backChange} 退格${gradeJson.backSpace} 键准${gradeJson.keyAccurate}% ${
+          this.$root.isState.isWordHint ? '理论码长' + this.$root.gdqJson.llmc : ''
+        } 打词${wordRate}% 错字0 字数${this.$root.gdqJson.withStr.length} 耗时${this.$root.sszk.start}s 个签:${
+          this.$root.userInfo.sign
+        }   -BB打字机`
+      }
+      androids.setPasteText(str)
+      this.toast(str)
+      androids.changeFlagBoce()
+      androids.sendMsgQQ(str)
+    },
+    share(title, remainder) {
       // 分享发文
       this.toast('分享成功')
       androids.changeFlagBoce()
-      console.log('111',title)
       const withStr = this.$root.gdqJson.withStr === '' ? '啊哦..啥文都没,不知分享啥' : this.$root.gdqJson.withStr
-      const str = `${title !== undefined ? `《${title}》\n` : ''}${withStr}\n-----第${
-        this.$root.gdqJson.severnNum
-      }段-----`
+      const str = `${
+        title !== undefined
+          ? `《${title}》\n`
+          : this.$root.isState.isDiyExercise
+          ? this.$root.diyWordJson.wordTitle
+          : ''
+      }${withStr}\n-----第${this.$root.gdqJson.severnNum}段-----${remainder !== undefined ? `余${remainder}字` : ''}`
       androids.setPasteText(str)
       androids.sendMsgQQ(str)
     },
@@ -303,23 +373,25 @@ export default {
       // 返回错字及错字后的时速
       let errorNum = 0
       let errorAry = []
+      let errorAryTow = []
       this.$root.textJson.tR.split('').forEach((e, i) => {
         // 每改变一次文字，循环判断一遍是否输入正确
         const ee = this.$root.gdqJson.withStr[i]
         if (e !== ee) {
           errorNum++
           errorAry.push(`✘${e}✓${ee}`)
+          errorAryTow.push([e, ee])
         }
       })
       if (errorNum === 0) return '错字0'
       const countError = () => {
         // 计算出错字后的速度
         const withL = this.$root.gdqJson.withStr.length
-        const succeddSpeed = this.$root.sszk.sd // 正确的速度
+        const succeddSpeed = this.$root.sszk.speed // 正确的速度
         const errorSpeed = (((withL - errorNum * 5) / this.$root.sszk.start) * 60).toFixed(2)
         return `${errorSpeed}/${succeddSpeed}`
       }
-      return [`错字${errorNum}[${errorAry.join(',')}]`, countError()]
+      return [`错字${errorNum}[${errorAry.join(',')}]`, countError(), errorNum, errorAryTow]
     },
     readWordHint(str) {
       // 拿词提
@@ -350,6 +422,13 @@ export default {
       // 获取焦点了的事件
       if (i === 1) androids.changeFlagFocus()
       else androids.changeFlagBoce()
+    },
+    isDiyExercise() {
+      // 判断是否处在自定义跟打模式中
+      if (this.$root.isState.isDiyExercise === true) {
+        this.$root.isState.isDiyExercise = false // 将自定义文章模式直接卡擦掉，不戳给他打了，马勒戈壁的
+        this.toast('成功退出自定义文章模式,GetOut')
+      }
     },
     wordAnalySort(e) {
       // 词提分析的
@@ -412,12 +491,13 @@ export default {
     },
     countSd() {
       // 计算速度
-      this.$root.sszk.sd = ((this.$root.textJson.tR.length / this.$root.sszk.start) * 60).toFixed(2) // 实时速度
-      this.$root.sszk.mc = (this.$root.sszk.zjs.length / this.$root.textJson.tR.length).toFixed(2) // 实时码长
-      this.$root.sszk.jj = (this.$root.sszk.zjs.length / this.$root.sszk.start).toFixed(2) // 实时击键
+      this.$root.sszk.speed = ((this.$root.textJson.tR.length / this.$root.sszk.start) * 60).toFixed(2) // 实时速度
+      this.$root.sszk.runningYard = (this.$root.sszk.zjs.length / this.$root.textJson.tR.length).toFixed(2) // 实时码长
+      this.$root.sszk.keystroke = (this.$root.sszk.zjs.length / this.$root.sszk.start).toFixed(2) // 实时击键
     },
     async sendArticle() {
       // 读文
+      this.isDiyExercise()
       this.$root.textJson.tR = ''
       this.$root.gdqJson.startTime = null
       this.$root.currentPage.currentPageNum = 0
@@ -548,23 +628,17 @@ export default {
     verifCurrentIsYes() {
       // 验证本页的对错
       this.$nextTick(() => {
-        this.$root.gdqJson.withStr
-          .slice(
-            this.$root.currentPage.startStrLength,
-            this.$root.currentPage.startStrLength + this.$root.currentPage.onePageSize
-          )
-          .split('')
-          .forEach((e, i) => {
-            // 每改变一次文字，循环判断一遍是否输入正确
-            const index = this.$root.currentPage.startStrLength + i
-            let dom = document.getElementById(`gd_${index}`)
-            let isCorret = this.$root.textJson.hintAry.isCorrectAry[index].isCorret
-            if (dom === null || dom === undefined) return
-            dom.classList.remove('zq')
-            dom.classList.remove('cw')
-            if (isCorret === null) return
-            dom.classList.add(isCorret === true ? 'zq' : 'cw')
-          })
+        this.$root.gdqJson.withStr.split('').forEach((e, i) => {
+          // 每改变一次文字，循环判断一遍是否输入正确
+          const index = this.$root.currentPage.startStrLength + i
+          let dom = document.getElementById(`gd_${index}`)
+          let isCorret = this.$root.textJson.hintAry.isCorrectAry[index].isCorret
+          if (dom === null || dom === undefined) return
+          dom.classList.remove('zq')
+          dom.classList.remove('cw')
+          if (isCorret === null) return
+          dom.classList.add(isCorret === true ? 'zq' : 'cw')
+        })
       })
     }
   }

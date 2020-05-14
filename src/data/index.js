@@ -13,15 +13,16 @@ const user = { // 登录块
 }
 const sszk = {
   start: 0,
-  hg: 0,
+  backChange: 0, // 回改
   zjs: '',
-  sd: 0,
-  mc: 0,
-  jj: 0,
+  speed: 0, // 速度
+  runningYard: 0, // 码长
+  keystroke: 0,
   isChn: true,
   previousBm: '',
   wordStr: '',
-  backSpace: 0
+  backSpace: 0,
+  realTimeSpeed:[]
 }
 module.exports = {
   default: {
@@ -31,6 +32,11 @@ module.exports = {
     sszk: {
       ...sszk
     }
+  },
+  diyWordJson: {
+    wordTitle: '', // 文章的标题是什么
+    wordText: '', // 自定义的文段内容
+    lastTextLength: 0 //上次跟打到哪个长度
   },
   textJson: { // 渲染跟打窗内容所需数据
     dealWithText: '', // 需处理的字
@@ -58,7 +64,7 @@ module.exports = {
     startTime: null, // 开始跟打时间
     endTime: null, // 结束跟打时间
     severnNum: 1, // 段落号
-    withStr: `这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒这个人很懒`, // 文段内容
+    withStr: `如果我是DJ你会爱我吗`, // 文段内容
     currentWordHint: '' // 当前编码提示
   },
   currentPage: { // 当前页
@@ -68,6 +74,7 @@ module.exports = {
     onePageSize: 200 // 当前每一页需加载多少个字
   },
   isState: { // 状态值
+    isDiyExercise: false, // 是否在打着自定义文章
     isWordHint: false, // 是否显示词提
     isBlur: false, // 是否在跟打
     isSign: false, // 弹出绑定QQ的窗口
@@ -75,7 +82,9 @@ module.exports = {
     isWordAnalysis: false, // 是否出现词提框
     isDrawer: false, //是否出现左侧抽屉
     isRegLoginDialog: false, //是否出现登录框,
-    isReadTextWay: '2' // 是否自动读文
+    isReadTextWay: '2', // 是否自动读文
+    isGradeList: false, // 是否显示成绩列表
+    isRradeCharts:false , // 是否显示成绩统计图
   },
   wordJson: { // 关于词提这块的数据
     optionAry: [],

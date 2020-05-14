@@ -5,7 +5,7 @@ Vue.prototype.toast = (str) => { // 提示的
   androids.message(str)
 }
 Vue.prototype.loginIptBlur = (e) => { // 获取焦点的
-  if (env === 'development') return
+  // if (env === 'development') return
   if (e === 2) androids.inputFocus()
   else androids.inputBlur()
 }
@@ -23,4 +23,7 @@ Vue.prototype.shuffle = (array) => { // 打乱数组，用于乱序单字等等
     array[i] = t;
   }
   return array;
+}
+Vue.prototype.convertCanvasToImage = (canvas) => { // canvas转图片
+  return canvas.toDataURL("image/png");
 }

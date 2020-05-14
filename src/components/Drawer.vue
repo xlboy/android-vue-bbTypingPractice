@@ -50,7 +50,7 @@
         <el-button
           type="primary"
           id="anew"
-          icon="el-icon-s-data"
+          icon="el-icon-s-order"
           circle
           @click="$root.isState.isWordAnalysis = true"
         ></el-button>

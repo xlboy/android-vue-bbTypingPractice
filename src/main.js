@@ -25,8 +25,10 @@ import  '@/utils/public.js'
 // 全局引入按需引入UI库 vant、element-ui....
 import '@/plugins/vant'
 import '@/plugins/element-ui'
+import '@/plugins/v-charts'
+// import  "@/plugins/html2canvas"
 // import '@/plugins/vconsole'
-
+// Vue.use(html2canvas)w
 // 移动端适配--里面需要改个定时器的延时秒数，300ms的TimeOut定时器注释掉
 import 'lib-flexible/flexible.js'
 
