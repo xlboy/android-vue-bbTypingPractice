@@ -93,17 +93,11 @@ export default {
     PostText
   },
   watch: {
-    ['$root.sszk.speed'](){
-      this.$root.sszk.speed = isNaN(this.$root.sszk.speed) || this.$root.sszk.speed === 'Infinity' ? 0 : this.$root.sszk.speed
-      this.$root.sszk.keystroke = isNaN(this.$root.sszk.keystroke) || this.$root.sszk.keystroke === 'Infinity' ? 0 : this.$root.sszk.keystroke
-      if(this.$root.sszk.speed > 1000) this.$root.sszk.speed = 1000
-      if(this.$root.sszk.keystroke > 20) this.$root.sszk.keystroke = 20
+    ['$root.sszk.speed']() {
+     this.verifSpeedOverflow()
     },
-    ['$root.sszk.keystroke'](){
-      this.$root.sszk.speed = isNaN(this.$root.sszk.speed) || this.$root.sszk.speed === 'Infinity' ? 0 : this.$root.sszk.speed
-      this.$root.sszk.keystroke = isNaN(this.$root.sszk.keystroke) || this.$root.sszk.keystroke === 'Infinity' ? 0 : this.$root.sszk.keystroke
-      if(this.$root.sszk.speed > 1000) this.$root.sszk.speed = 1000
-      if(this.$root.sszk.keystroke > 20) this.$root.sszk.keystroke = 20
+    ['$root.sszk.keystroke']() {
+      this.verifSpeedOverflow()
     },
     async ['$root.isState.isWordHint']() {
       await this.start()
@@ -234,6 +228,15 @@ export default {
     }
   },
   methods: {
+    verifSpeedOverflow() {
+      // 判断下速度是否超出正常的指量，会影响可视化图
+      this.$root.sszk.speed =
+        isNaN(this.$root.sszk.speed) || this.$root.sszk.speed === 'Infinity' ? 0 : this.$root.sszk.speed
+      this.$root.sszk.keystroke =
+        isNaN(this.$root.sszk.keystroke) || this.$root.sszk.keystroke === 'Infinity' ? 0 : this.$root.sszk.keystroke
+      if (this.$root.sszk.speed > 1000) this.$root.sszk.speed = 1000
+      if (this.$root.sszk.keystroke > 20) this.$root.sszk.keystroke = 20
+    },
     initialization() {
       this.$root.eventHub.$on('start', this.start)
       this.$root.eventHub.$on('share', this.share)
@@ -268,7 +271,8 @@ export default {
         })
         .then(response => {})
     },
-    addGrade(gradeJson) { // 上传此局成绩
+    addGrade(gradeJson) {
+      // 上传此局成绩
       if (this.isNull(this.$root.userInfo.userId)) return
       this.$axios
         .post(`/addUserGrade`, {
@@ -314,7 +318,7 @@ export default {
       gradeJson['realTimeSpeed'] = [...this.$root.sszk.realTimeSpeed]
       this.addGrade(gradeJson) // 触发上传当前成绩的事件
       if (countTextSpeed !== '错字0') {
-        str = `第${gradeJson.gradeJson}段 速度${countTextSpeed[1]} 击键${gradeJson.keystroke} 码长${
+        str = `第${gradeJson.severnNum}段 速度${countTextSpeed[1]} 击键${gradeJson.keystroke} 码长${
           gradeJson.runningYard
         } 回改${gradeJson.backChange} 退格${this.$root.sszk.backSpace} 键准${gradeJson.keyAccurate}% ${
           this.$root.isState.isWordHint ? '理论码长' + this.$root.gdqJson.llmc : ''
@@ -361,6 +365,7 @@ export default {
         this.$root.currentPage.startStrLength = 0
         this.$root.currentPage.currentPageNum = 0
         this.$root.sszk = {...this.$root.default.sszk}
+        this.$root.sszk.realTimeSpeed = [] // 这个深深的栈噢，还遗留在脑壳里噢
         this.$root.gdqJson.withStr.split('').forEach((e, i) => {
           let dom = document.getElementById(`gd_${i}`)
           if (dom === null || dom === undefined) return

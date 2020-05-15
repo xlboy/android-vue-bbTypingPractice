@@ -23,6 +23,22 @@
         style="width: 73px;margin-top:10px"
       >确定</el-button>
     </el-dialog>
+    <!-- 发文的dialog -->
+    <el-dialog
+      class="u-dialog"
+      title="发文"
+      v-if="display.sendTextDialog"
+      :visible.sync="display.sendTextDialog"
+      width="70%"
+      center
+      style="transition: all 0s;"
+    >
+      <div class="flex send-box">
+        <el-tag effect="plain" :type="btnTextStyle.style[0]" @click.stop="readTntelligentWord">智能读文</el-tag>
+        <el-tag effect="plain" :type="btnTextStyle.style[i + 1]" v-for="(item,i) in btnTextStyle.btnText" :key="i" @click.stop="sendWordText(item)">{{item}}</el-tag>
+        <el-tag effect="plain" :type="btnTextStyle.style[2]" @click.stop="display.diyWord = true">自定义文章</el-tag>
+      </div>
+    </el-dialog>
     <el-dialog
       class="u-dialog"
       :title="'自定义文章'"
@@ -31,8 +47,13 @@
       center
       style="transition: all 0s;"
     >
-      <el-input style="margin-bottom:10px;" v-model.number="$root.diyWordJson.wordTitle" @blur="loginIptBlur(1)"
-        @focus="loginIptBlur(2)" clearable>
+      <el-input
+        style="margin-bottom:10px;"
+        v-model.number="$root.diyWordJson.wordTitle"
+        @blur="loginIptBlur(1)"
+        @focus="loginIptBlur(2)"
+        clearable
+      >
         <template slot="prepend">文章标题</template>
       </el-input>
       <el-input
@@ -69,29 +90,11 @@
         style="width: 73px;margin-top:10px"
       >确定</el-button>
     </el-dialog>
-    <el-popover placement="bottom-start" trigger="click" style="min-width:100px;height:50vh">
-      <ul class="pro-ul">
-        <li>
-          <el-link :underline="false" @click.stop="$root.eventHub.$emit('sendArticle')">智能读文</el-link>
-        </li>
-        <li>
-          <el-link :underline="false" @click.stop="sendWordText('常单前五百')">常单前五百</el-link>
-        </li>
-        <li>
-          <el-link :underline="false" @click.stop="sendWordText('常单中五百')">常单中五百</el-link>
-        </li>
-        <li>
-          <el-link :underline="false" @click.stop="sendWordText('常单后五百')">常单后五百</el-link>
-        </li>
-        <li>
-          <el-link :underline="false" @click.stop="sendWordText('常单前千五')">常单前千五</el-link>
-        </li>
-        <li>
-          <el-link :underline="false" @click.stop="display.diyWord = true">自定义文章</el-link>
-        </li>
-      </ul>
-      <el-button type="primary" slot="reference" style="margin:0px auto;">发文</el-button>
-    </el-popover>
+    <el-button
+      type="primary"
+      @click.stop="display.sendTextDialog = true"
+      style="margin:0px auto;"
+    >发文</el-button>
   </div>
 </template>
 
@@ -102,8 +105,13 @@ export default {
   data() {
     return {
       display: {
+        sendTextDialog: false, // 发文框
         textSize: false, // 显示设置字数的框
         diyWord: false // 显示设置自定义文章的框
+      },
+      btnTextStyle:{
+        style:["success","warning","danger","info"],
+        btnText:["常单前五百","常单中五百","常单后五百","常单前千五"]
       },
       currentMode: '', // 当前状态
       sendLength: 100 // 每段字数
@@ -114,12 +122,20 @@ export default {
     this.readDiyWord()
   },
   watch: {
+    ['display.sendTextDialog'](){
+      this.btnTextStyle.style = this.shuffle(this.btnTextStyle.style)
+      console.log(this.btnTextStyle.style)
+    },
     currentMode() {},
-    ['$root.diyWordJson.wordText'](){
-      this.$root.diyWordJson.wordText = this.$root.diyWordJson.wordText.replace(/\s/g,'')
+    ['$root.diyWordJson.wordText']() {
+      this.$root.diyWordJson.wordText = this.$root.diyWordJson.wordText.replace(/\s/g, '')
     }
   },
   methods: {
+    readTntelligentWord(){
+        this.display.sendTextDialog = false
+        this.$root.eventHub.$emit('sendArticle')
+    },
     initialization() {
       this.$root.eventHub.$on('sendDiyText', this.sendDiyText)
     },
@@ -140,14 +156,21 @@ export default {
       let wordText = this.$root.diyWordJson.wordText.substr(lastTextLength, this.sendLength)
       let remainder = this.$root.diyWordJson.wordText.length - lastTextLength - this.sendLength
       remainder = remainder < 0 ? 0 : remainder
-      if(wordText.length === 0) return this.toast('等等,等等等等,那个好像文已发空了是吗')
+      if (wordText.length === 0) return this.toast('等等,等等等等,那个好像文已发空了是吗')
       this.$root.gitTyping.currentSeverNum++
-      this.$root.diyWordJson.lastTextLength +=this.sendLength
+      this.$root.diyWordJson.lastTextLength += this.sendLength
       localStorage.setItem('diy-wordTitle', this.$root.diyWordJson.wordTitle)
       localStorage.setItem('diy-wordText', this.$root.diyWordJson.wordText)
       localStorage.setItem('diy-lastTextLength', this.$root.diyWordJson.lastTextLength)
-      // console.log(this.$root.diyWordJson.wordTitle, this.$root.gitTyping.currentSeverNum, wordText, true , remainder)
-      this.$root.eventHub.$emit('sendHit', this.$root.diyWordJson.wordTitle, this.$root.gitTyping.currentSeverNum, wordText, true , remainder)
+      this.$root.eventHub.$emit(
+        'sendHit',
+        this.$root.diyWordJson.wordTitle,
+        this.$root.gitTyping.currentSeverNum,
+        wordText,
+        true,
+        remainder
+      )
+      this.display.sendTextDialog = false
     },
     diyWordSendText() {
       this.$root.gitTyping.currentSeverNum = 0
@@ -172,6 +195,7 @@ export default {
       this.$root.eventHub.$emit('sendHit', this.currentMode, this.$root.gitTyping.currentSeverNum, wordText, true)
       this.$root.gitTyping.currentSeverNum++
       this.display.textSize = false
+      this.display.sendTextDialog = false
     },
     sendWordText(val) {
       this.currentMode = val
@@ -190,6 +214,14 @@ export default {
       width: 100%;
       text-align: center;
     }
+  }
+}
+.send-box {
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-evenly !important ;
+  .el-tag {
+    margin-bottom: 5px;
   }
 }
 </style>

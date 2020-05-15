@@ -23,12 +23,12 @@
           <el-tag size="medium" type="success">第{{scope.row.dataStr.severnNum}}段</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="速度" width="100">
+      <el-table-column label="速度" width="140">
         <template slot-scope="scope">
           <el-tag size="medium">{{scope.row.dataStr.speed}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="击键">
+      <el-table-column label="击键"  width="100">
         <template slot-scope="scope">
           <el-tag size="medium">{{scope.row.dataStr.keystroke}}</el-tag>
         </template>
@@ -70,7 +70,7 @@
               <el-tag size="medium" type="success" style="width:40%;text-align:center;">{{item[1]}}</el-tag>
             </el-row>
             <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{scope.row.dataStr.errorSize.num}}</el-tag>
+              <el-tag size="medium" :type="scope.row.dataStr.errorSize.num === '0' ? 'success' : 'danger'">{{scope.row.dataStr.errorSize.num}}</el-tag>
             </div>
           </el-popover>
         </template>
@@ -97,7 +97,9 @@
       :current-page.sync="page.currentPage"
       :total="gradeDataList.length"
     ></el-pagination>
-    <GradeCharts ref="GradeCharts"/>
+    <keep-alive>
+      <GradeCharts ref="GradeCharts"/>
+    </keep-alive>
   </el-dialog>
 </template>
 
@@ -128,9 +130,6 @@ export default {
       this.$refs['GradeCharts'].loadGrade(row, [...realTimeSpeed])
     },
     getUserGradeList() {
-      // var resp = [{id:1},{id:2}]
-      // this.gradeDataList = resp.reverse()
-      // console.log(this.gradeDataList)
       this.$axios
         .post(`/getUserGrade`, {
           userId: this.$root.userInfo.userId
